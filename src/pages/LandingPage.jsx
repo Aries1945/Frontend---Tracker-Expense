@@ -4,9 +4,7 @@ import Navbar from "../components/Navbar";
 const Hero = () => (
   <section class="flex flex-col items-center text-center px-6 pt-20 pb-28 max-w-3xl mx-auto">
 
-    <div class="flex items-center gap-2 text-[#1baa6a] text-sm font-semibold bg-[#e8f7f0] px-4 py-1.5 rounded-full mb-8">
-      Kelola uang dengan lebih sadar
-    </div>
+
 
     <h1 class="text-[#1a1a2e] font-extrabold text-5xl md:text-6xl leading-tight mb-6">
       Pengeluaran harian,
@@ -22,13 +20,13 @@ const Hero = () => (
     <div class="flex flex-col sm:flex-row items-center gap-3">
       <A
         href="/register"
-        class="bg-[#1baa6a] hover:bg-[#159758] text-white font-semibold px-7 py-3.5 rounded-xl text-sm transition-colors"
+        class="bg-[#1baa6a]  text-white font-semibold px-7 py-3.5 rounded-xl text-sm transition-colors"
       >
         Mulai Gratis
       </A>
       <A
         href="/login"
-        class="border border-[#d0d0c8] hover:border-[#1baa6a] bg-white text-[#1a1a2e] font-semibold px-7 py-3.5 rounded-xl text-sm transition-colors"
+        class="border border-[#d0d0c8]  bg-white text-[#1a1a2e] font-semibold px-7 py-3.5 rounded-xl text-sm transition-colors"
       >
         Saya sudah punya akun
       </A>

@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import LandingPage from './pages/LandingPage';
 import Expense from './pages/Expense';
 import NotFound from './pages/NotFound';
+import Profile from './pages/Profile';
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
         <Route path="/register" component={Register}/>
         <Route path="/dashboard" component={Dashboard}/>
         <Route path="/expense" component={Expense}/>
+        <Route path="/profile" component={Profile}/>
         <Route path="*" component={NotFound}/>
       </Router>
     </>
