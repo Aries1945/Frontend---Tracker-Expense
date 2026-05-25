@@ -1,61 +1,53 @@
 import { A } from "@solidjs/router";
+import Navbar from "../components/Navbar";
 
-export default () => {
-  return (
-    <>
-      <nav className="w-full flex justify-between items-center px-6 py-4 border-b border-gray-200 bg-white shadow-sm">
-        <div className="text-xl font-extrabold text-blue-600">Logo</div>
-        <A href="/" className="hover:text-blue-600 transition-colors">Beranda</A>
-        <div className="flex items-center space-x-6">
-            <A href="/login" className="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2 rounded-lg  shadow-md">Masuk</A>
-            <A href="/register" className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg  shadow-md">Daftar</A>
-        </div>
-      </nav>
+const Main = () => (
+  <div class="flex flex-col items-center text-center px-6 pt-20 pb-28 max-w-3xl mx-auto">
 
-      <main className="min-h-200 bg-gray-50 flex flex-col items-center justify-center p-6">
-        
-        <div className="mb-8 text-center">
-          <div className="text-4xl font-extrabold text-blue-600 mb-3">Logo</div>
-          <h1 className="text-3xl font-bold text-gray-900">Masuk ke akun</h1>
-        </div>
-
-        <div className="bg-white w-full max-w-md rounded-2xl shadow-xl p-8 border border-gray-100">
-          <form className="space-y-6">
+    <h1 class="text-[#1a1a2e] font-extrabold text-5xl md:text-6xl leading-tight mb-6">Masuk Akun</h1>
+    
+    <div class="bg-white w-full max-w-md text-left rounded-2xl shadow-xl p-8 border border-gray-100">
+          <form class="space-y-6">
             
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Username</label>
+            <div class="flex flex-col">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Username</label>
               <input 
                 type="text" 
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 transition-all outline-none"
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 transition-all"
                 placeholder="Masukkan username"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
               <input 
                 type="password" 
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 transition-all outline-none"
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 transition-all"
                 placeholder="Masukkan password"
               />
             </div>
 
             <button 
               type="button" 
-              className="w-full bg-blue-600 text-white font-bold text-lg py-3 rounded-lg hover:bg-blue-700 active:scale-[0.98] transition-all shadow-md mt-4"
+              class="bg-[#1baa6a] hover:bg-[#159758] text-white text-sm font-semibold text-lg py-3 w-full py-2.5 rounded-xl transition-colors"
             >
-              Masuk
+              Daftar
             </button>
           </form>
 
-          <div className="mt-8 text-center text-gray-600 text-sm">
+          <div class="mt-8 text-center text-gray-600 text-sm">
             Belum punya akun?{' '}
-            <A href="/register" className="text-blue-600 font-semibold hover:text-blue-800 hover:underline transition-all">
-              Daftar di sini
-            </A>
+            <A href="/register" class="text-blue-600 font-semibold hover:text-blue-800 hover:underline transition-all underline">Daftar di sini</A>
           </div>
-        </div>
-      </main>
-    </>
-  )
-};
+    </div>
+  </div>
+)
+
+export default function Login() {
+  return (
+    <div class="min-h-screen bg-[#f5f5f0]" style={{ "font-family": "'Plus Jakarta Sans', sans-serif" }}>
+      <Navbar />
+      <Main />
+    </div>
+  );
+}
