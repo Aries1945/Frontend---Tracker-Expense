@@ -1,5 +1,6 @@
 import { createSignal, createMemo, For, Show } from "solid-js";
 import DashboardNavbar from "../components/DashboardNavbar";
+import ExpenseForm from "../components/ExpenseForm";
 
 const KATEGORI_LIST = [
     "Semua",
@@ -29,8 +30,7 @@ export default () => {
     // Data pengeluaran kosongan
     const [expenses, setExpenses] = createSignal([]);
 
-    // State navigasi halaman dummy ("dashboard" atau "tambah")
-    const [page, setPage] = createSignal("dashboard");
+    const [showForm, setShowForm] = createSignal(false);
 
     // Filter state
     const [search, setSearch] = createSignal("");
@@ -52,6 +52,8 @@ export default () => {
         });
     });
 
+
+    // Belum berfungsi saat ini, karena belum konek database etc..
     const totalPengeluaran = createMemo(() => {
         return filteredExpenses().reduce((sum, exp) => sum + exp.harga, 0);
     });
@@ -65,12 +67,6 @@ export default () => {
         return summary;
     });
 
-    // Fungsi submit form (Hanya simulasi pindah halaman kembali ke dashboard)
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setPage("dashboard");
-    };
-
     const handleResetFilter = () => {
         setSearch("");
         setFilterKategori("Semua");
@@ -80,12 +76,13 @@ export default () => {
 
     return (
         <div class="min-h-screen bg-[#f3f3f0]">
-            <DashboardNavbar />
 
-            <main class="max-w-6xl mx-auto px-10 py-10">
+            {/* Background content — blurs when form is open */}
+            <div classList={{ "blur-sm pointer-events-none select-none": showForm() }}>
+                <DashboardNavbar />
 
-                {/* ================= HALAMAN DASHBOARD ================= */}
-                <Show when={page() === "dashboard"}>
+                <main class="max-w-6xl mx-auto px-10 py-10">
+
                     {/* Header */}
                     <div class="flex items-center justify-between mb-10">
                         <div>
@@ -94,7 +91,7 @@ export default () => {
                         </div>
 
                         <button
-                            onClick={() => setPage("tambah")}
+                            onClick={() => setShowForm(true)}
                             class="bg-[#1baa6a] text-white font-semibold px-5 py-3 rounded-xl shadow cursor-pointer"
                         >
                             + Tambah Pengeluaran
@@ -209,77 +206,20 @@ export default () => {
                             </div>
                         </div>
                     </div>
-                </Show>
 
-                {/* ================= HALAMAN TAMBAH PENGELUARAN ================= */}
-                <Show when={page() === "tambah"}>
-                    <div class="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8 mt-10">
-                        <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-2xl font-bold text-[#1a1a2e]">Tambah Pengeluaran</h2>
-                            <button
-                                onClick={() => setPage("dashboard")}
-                                class="text-gray-400 hover:text-gray-600 text-2xl cursor-pointer"
-                            >
-                                ✕
-                            </button>
-                        </div>
+                </main>
+            </div>
 
-                        <form onSubmit={handleSubmit} class="space-y-5">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Nama Pengeluaran</label>
-                                <input
-                                    type="text"
-                                    placeholder="Contoh: Makan Siang"
-                                    class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none"
-                                />
-                            </div>
+            {/* Modal overlay */}
+            <Show when={showForm()}>
+                <div class="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
+                    <ExpenseForm
+                        onSave={() => setShowForm(false)}
+                        onCancel={() => setShowForm(false)}
+                    />
+                </div>
+            </Show>
 
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Harga (Rp)</label>
-                                <input
-                                    type="number"
-                                    placeholder="Contoh: 50000"
-                                    class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none"
-                                />
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
-                                <input
-                                    type="date"
-                                    class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none"
-                                />
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Kategori Pengeluaran</label>
-                                <select class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm bg-white focus:outline-none">
-                                    <For each={KATEGORI_LIST.filter((k) => k !== "Semua")}>
-                                        {(kat) => <option value={kat}>{kat}</option>}
-                                    </For>
-                                </select>
-                            </div>
-
-                            <div class="flex gap-3 pt-2">
-                                <button
-                                    type="button"
-                                    onClick={() => setPage("dashboard")}
-                                    class="flex-1 border border-gray-300 text-gray-700 font-semibold px-5 py-3 rounded-xl cursor-pointer"
-                                >
-                                    Batal
-                                </button>
-                                <button
-                                    type="submit"
-                                    class="flex-1 bg-[#1baa6a] text-white font-semibold px-5 py-3 rounded-xl shadow cursor-pointer"
-                                >
-                                    Simpan
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </Show>
-
-            </main>
         </div>
     );
 };
