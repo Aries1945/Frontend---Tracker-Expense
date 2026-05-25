@@ -1,3 +1,5 @@
+import { A } from "@solidjs/router";
+
 export default () => (
   <nav class="flex items-center justify-between px-10 py-5 max-w-7xl mx-auto">
     <div class="flex items-center gap-2">
