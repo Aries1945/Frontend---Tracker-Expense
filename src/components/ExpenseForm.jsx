@@ -11,9 +11,7 @@ const ExpenseForm = (props) => {
 
   return (
     <div 
-      class={`max-w-md bg-white rounded-lg p-6 shadow-md border-2 ${
-        isEdit() ? 'border-transparent' : 'border-blue-500'
-      }`}
+      class={`max-w-md bg-white rounded-lg p-6 shadow-md`}
     >
       {/* Form Header Title */}
       <h2 class="text-xl font-semibold text-gray-800 mb-6">
@@ -68,18 +66,19 @@ const ExpenseForm = (props) => {
         {/* Action Buttons */}
         <div class="flex justify-end space-x-3 pt-4">
           <button
-            type="submit"
-            class="px-6 py-2 bg-gray-300 text-gray-800 rounded-xl font-medium hover:bg-gray-400 active:scale-95 transition-all"
-          >
-            simpan
-          </button>
-          <button
             type="button"
             onClick={props.onCancel}
-            class="px-6 py-2 bg-gray-300 text-gray-800 rounded-xl font-medium hover:bg-gray-400 active:scale-95 transition-all"
+            class="px-6 py-2 bg-red-500 text-white rounded-xl font-medium hover:bg-red-600 active:scale-95 transition-all"
           >
             batal
           </button>
+          <button
+            type="submit"
+            class="px-6 py-2 bg-green-600 text-white rounded-xl font-medium hover:bg-green-700 active:scale-95 transition-all"
+          >
+            simpan
+          </button>
+          
         </div>
       </form>
     </div>
