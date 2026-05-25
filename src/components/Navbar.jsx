@@ -12,10 +12,10 @@ export default () => (
     </div>
 
     <div class="flex items-center gap-3">
-      <A href="/login" class="text-sm font-semibold text-[#1a1a2e] hover:text-[#1baa6a] transition-colors">
+      <A href="/login" class="text-sm font-semibold text-[#1a1a2e] ">
         Masuk
       </A>
-      <A href="/register" class="bg-[#1baa6a] hover:bg-[#159758] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"> Daftar </A>
+      <A href="/register" class="bg-[#1baa6a]  text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"> Daftar </A>
     </div>
   </nav>
 );
