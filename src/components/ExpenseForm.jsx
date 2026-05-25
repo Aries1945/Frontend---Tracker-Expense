@@ -70,13 +70,13 @@ const ExpenseForm = (props) => {
             onClick={props.onCancel}
             class="px-6 py-2 bg-red-500 text-white rounded-xl font-medium hover:bg-red-600 active:scale-95 transition-all"
           >
-            batal
+            Batal
           </button>
           <button
             type="submit"
             class="px-6 py-2 bg-green-600 text-white rounded-xl font-medium hover:bg-green-700 active:scale-95 transition-all"
           >
-            simpan
+            Simpan
           </button>
           
         </div>
