@@ -57,18 +57,6 @@ export default () => {
                 />
               </div>
 
-              <div>
-                <label class="block text-sm font-semibold text-[#1a1a2e] mb-2">
-                  Ganti Password
-                </label>
-
-                <input
-                  type="password"
-                  placeholder="Masukkan password baru"
-                  class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#1baa6a]"
-                />
-              </div>
-
               {/* Button */}
               <div class="flex justify-end gap-4 pt-4">
                 

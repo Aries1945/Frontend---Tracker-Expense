@@ -80,8 +80,8 @@ export default () => {
                   </p>
                 </div>
 
-                <p class="font-bold text-red-500">
-                  -Rp 45.000
+                <p class="font-bold text-500">
+                  Rp 45.000
                 </p>
               </div>
 
@@ -95,8 +95,8 @@ export default () => {
                   </p>
                 </div>
 
-                <p class="font-bold text-red-500">
-                  -Rp 20.000
+                <p class="font-bold text-500">
+                  Rp 20.000
                 </p>
               </div>
 
