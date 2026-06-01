@@ -1,22 +1,28 @@
 import { createSignal, createEffect } from "solid-js";
 import DashboardNavbar from "../components/DashboardNavbar";
-import { useAuth } from "../context/AuthContext";
-import { getExpenses } from "../utils/expenseStore";
+
+const API_BASE = "http://localhost:5000/api";
 
 export default () => {
-  const { user, updateUser } = useAuth();
+  const user = JSON.parse(localStorage.getItem("spendly_session") || "null");
 
   const [isEdit, setIsEdit] = createSignal(false);
-  const [username, setUsername] = createSignal(user()?.username || "");
-  const [email, setEmail] = createSignal(user()?.email || "");
+  const [username, setUsername] = createSignal(user?.username || "");
+  const [email, setEmail] = createSignal(user?.email || "");
   const [error, setError] = createSignal("");
   const [expenses, setExpenses] = createSignal([]);
 
   createEffect(async () => {
-    const currentUser = user();
-    if (currentUser) {
-      const data = await getExpenses(currentUser.username);
-      setExpenses(data);
+    if (user) {
+      try {
+        const res = await fetch(`${API_BASE}/expenses?username=${encodeURIComponent(user.username)}`);
+        if (!res.ok) throw new Error("Gagal mengambil data pengeluaran");
+        const data = await res.json();
+        setExpenses(data);
+      } catch (err) {
+        console.error(err);
+        setExpenses([]);
+      }
     } else {
       setExpenses([]);
     }
@@ -28,11 +34,24 @@ export default () => {
 
   async function handleSave() {
     setError("");
-    const result = await updateUser(username(), email());
-    if (result.error) {
-      setError(result.error);
-    } else {
-      setIsEdit(false);
+    try {
+      const res = await fetch(`${API_BASE}/update-profile`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ oldUsername: user.username, newUsername: username(), newEmail: email() }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Gagal memperbarui profil.");
+      } else {
+        localStorage.setItem("spendly_session", JSON.stringify(data.user));
+        setIsEdit(false);
+        window.location.reload();
+      }
+    } catch (err) {
+      setError("Koneksi ke server gagal. Pastikan server backend menyala.");
     }
   }
 
@@ -55,7 +74,7 @@ export default () => {
             {/* Avatar */}
             <div class="flex justify-center">
               <div class="w-36 h-36 rounded-full bg-[#1baa6a] flex items-center justify-center text-white font-bold text-5xl shadow-inner">
-                {user()?.username?.[0]?.toUpperCase() || "?"}
+                {user?.username?.[0]?.toUpperCase() || "?"}
               </div>
             </div>
 

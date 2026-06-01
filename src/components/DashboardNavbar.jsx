@@ -1,12 +1,11 @@
 import { A, useNavigate } from "@solidjs/router";
-import { useAuth } from "../context/AuthContext";
 
 export default () => {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const user = JSON.parse(localStorage.getItem("spendly_session") || "null");
 
   function handleLogout() {
-    logout();
+    localStorage.removeItem("spendly_session");
     navigate("/", { replace: true });
   }
 
@@ -34,7 +33,7 @@ export default () => {
 
         <div class="flex items-center gap-4">
           <A href="/profile" class="text-[#1a1a2e] font-medium">
-            {user()?.username || "Profile"}
+            {user?.username || "Profile"}
           </A>
           <button
             onClick={handleLogout}

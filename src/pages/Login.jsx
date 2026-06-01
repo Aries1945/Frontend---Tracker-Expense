@@ -1,23 +1,33 @@
 import { createSignal } from "solid-js";
 import { A, useNavigate } from "@solidjs/router";
 import Navbar from "../components/Navbar";
-import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
   const [username, setUsername] = createSignal("");
   const [password, setPassword] = createSignal("");
   const [error, setError] = createSignal("");
   const navigate = useNavigate();
-  const { login } = useAuth();
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
-    const result = await login(username(), password());
-    if (result.error) {
-      setError(result.error);
-    } else {
-      navigate("/dashboard", { replace: true });
+    try {
+      const res = await fetch("http://localhost:5000/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username: username(), password: password() }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Gagal masuk.");
+      } else {
+        localStorage.setItem("spendly_session", JSON.stringify(data.user));
+        navigate("/dashboard", { replace: true });
+      }
+    } catch (err) {
+      setError("Koneksi ke server gagal. Pastikan server backend menyala.");
     }
   }
 

@@ -1,8 +1,8 @@
 import { createSignal, createMemo, For, Show, createEffect } from "solid-js";
 import DashboardNavbar from "../components/DashboardNavbar";
 import ExpenseForm from "../components/ExpenseForm";
-import { useAuth } from "../context/AuthContext";
-import { getExpenses, addExpense, deleteExpense } from "../utils/expenseStore";
+
+const API_BASE = "http://localhost:5000/api";
 
 const KATEGORI_LIST = [
   "Semua",
@@ -26,15 +26,21 @@ const formatTanggal = (dateStr) =>
   });
 
 export default () => {
-  const { user } = useAuth();
+  const user = JSON.parse(localStorage.getItem("spendly_session") || "null");
 
   const [expenses, setExpenses] = createSignal([]);
 
   createEffect(async () => {
-    const currentUser = user();
-    if (currentUser) {
-      const data = await getExpenses(currentUser.username);
-      setExpenses(data);
+    if (user) {
+      try {
+        const res = await fetch(`${API_BASE}/expenses?username=${encodeURIComponent(user.username)}`);
+        if (!res.ok) throw new Error("Gagal mengambil data pengeluaran");
+        const data = await res.json();
+        setExpenses(data);
+      } catch (err) {
+        console.error(err);
+        setExpenses([]);
+      }
     } else {
       setExpenses([]);
     }
@@ -89,16 +95,36 @@ export default () => {
   });
 
   async function handleSave(expenseData) {
-    const item = await addExpense(user().username, expenseData);
-    if (item) {
-      setExpenses([...expenses(), item]);
+    try {
+      const res = await fetch(`${API_BASE}/expenses`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username: user.username, expense: expenseData }),
+      });
+      if (!res.ok) throw new Error("Gagal menambah pengeluaran");
+      const item = await res.json();
+      if (item) {
+        setExpenses([...expenses(), item]);
+      }
+    } catch (err) {
+      console.error(err);
     }
     setShowForm(false);
   }
 
   async function handleDelete(id) {
-    const updated = await deleteExpense(user().username, id);
-    setExpenses(updated);
+    try {
+      const res = await fetch(`${API_BASE}/expenses/${id}?username=${encodeURIComponent(user.username)}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Gagal menghapus pengeluaran");
+      const updated = await res.json();
+      setExpenses(updated);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   const handleResetFilter = () => {

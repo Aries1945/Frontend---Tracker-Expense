@@ -1,7 +1,6 @@
 import { createSignal } from "solid-js";
 import { A, useNavigate } from "@solidjs/router";
 import Navbar from "../components/Navbar";
-import { useAuth } from "../context/AuthContext";
 
 export default function Register() {
   const [username, setUsername] = createSignal("");
@@ -10,22 +9,28 @@ export default function Register() {
   const [error, setError] = createSignal("");
   const [loading, setLoading] = createSignal(false);
   const navigate = useNavigate();
-  const { register } = useAuth();
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
     setLoading(true);
     try {
-      const result = await register(username(), email(), password());
-      if (result.error) {
-        setError(result.error);
+      const res = await fetch("http://localhost:5000/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username: username(), email: email(), password: password() }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Gagal melakukan registrasi.");
         setLoading(false);
       } else {
         navigate("/login", { replace: true });
       }
     } catch (err) {
-      setError("Terjadi kesalahan sistem. Silakan coba lagi.");
+      setError("Koneksi ke server gagal. Pastikan server backend menyala.");
       setLoading(false);
     }
   }
@@ -39,7 +44,7 @@ export default function Register() {
         <div class="bg-white w-full max-w-md text-left rounded-2xl shadow-xl p-8 border border-gray-100">
           <form class="space-y-6" onSubmit={handleSubmit}>
 
-            <div class="flex flex-col">
+            <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">Username</label>
               <input
                 type="text"
@@ -51,7 +56,7 @@ export default function Register() {
               />
             </div>
 
-            <div class="flex flex-col">
+            <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
               <input
                 type="email"
@@ -82,16 +87,16 @@ export default function Register() {
             <button
               type="submit"
               disabled={loading()}
-              class="bg-[#1baa6a] hover:bg-[#159758] text-white text-lg font-semibold py-3 w-full rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              class="bg-[#1baa6a] hover:bg-[#159758] text-white text-lg font-semibold py-3 w-full rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading() ? "Memproses..." : "Daftar"}
+              {loading() ? "Mendaftar..." : "Daftar"}
             </button>
           </form>
 
           <div class="mt-8 text-center text-gray-600 text-sm">
             Sudah punya akun?{" "}
             <A href="/login" class="text-blue-600 font-semibold hover:text-blue-800 hover:underline transition-all underline">
-              Masuk
+              Masuk di sini
             </A>
           </div>
         </div>

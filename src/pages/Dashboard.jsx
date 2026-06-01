@@ -1,8 +1,8 @@
 import { createMemo, For, Show, createSignal, createEffect } from "solid-js";
 import DashboardNavbar from "../components/DashboardNavbar";
 import { A } from "@solidjs/router";
-import { useAuth } from "../context/AuthContext";
-import { getExpenses } from "../utils/expenseStore";
+
+const API_BASE = "http://localhost:5000/api";
 
 const formatRupiah = (angka) =>
   "Rp " + angka.toLocaleString("id-ID");
@@ -15,15 +15,21 @@ const formatTanggal = (dateStr) =>
   });
 
 export default () => {
-  const { user } = useAuth();
+  const user = JSON.parse(localStorage.getItem("spendly_session") || "null");
 
   const [expenses, setExpenses] = createSignal([]);
 
   createEffect(async () => {
-    const currentUser = user();
-    if (currentUser) {
-      const data = await getExpenses(currentUser.username);
-      setExpenses(data);
+    if (user) {
+      try {
+        const res = await fetch(`${API_BASE}/expenses?username=${encodeURIComponent(user.username)}`);
+        if (!res.ok) throw new Error("Gagal mengambil data pengeluaran");
+        const data = await res.json();
+        setExpenses(data);
+      } catch (err) {
+        console.error(err);
+        setExpenses([]);
+      }
     } else {
       setExpenses([]);
     }
@@ -82,7 +88,7 @@ export default () => {
         <div class="flex items-center justify-between mb-10">
           <div>
             <h1 class="text-4xl font-bold text-[#1a1a2e]">
-              Halo, {user()?.username}!
+              Halo, {user?.username}!
             </h1>
             <p class="text-gray-500 mt-2">Pantau pengeluaranmu dengan lebih mudah</p>
           </div>

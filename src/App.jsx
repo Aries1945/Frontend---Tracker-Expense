@@ -8,11 +8,10 @@ import LandingPage from "./pages/LandingPage";
 import Expense from "./pages/Expense";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
-import { AuthProvider, useAuth } from "./context/AuthContext";
 
 function ProtectedRoute(props) {
-  const { user } = useAuth();
-  if (!user()) return <Navigate href="/login" />;
+  const isLoggedIn = !!localStorage.getItem("spendly_session");
+  if (!isLoggedIn) return <Navigate href="/login" />;
   return props.children;
 }
 
@@ -31,38 +30,36 @@ const App = () => {
         </div>
       )}
     >
-      <AuthProvider>
-        <Router>
-          <Route path="/" component={LandingPage} />
-          <Route path="/login" component={Login} />
-          <Route path="/register" component={Register} />
-          <Route
-            path="/dashboard"
-            component={() => (
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            )}
-          />
-          <Route
-            path="/expense"
-            component={() => (
-              <ProtectedRoute>
-                <Expense />
-              </ProtectedRoute>
-            )}
-          />
-          <Route
-            path="/profile"
-            component={() => (
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            )}
-          />
-          <Route path="*" component={NotFound} />
-        </Router>
-      </AuthProvider>
+      <Router>
+        <Route path="/" component={LandingPage} />
+        <Route path="/login" component={Login} />
+        <Route path="/register" component={Register} />
+        <Route
+          path="/dashboard"
+          component={() => (
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          )}
+        />
+        <Route
+          path="/expense"
+          component={() => (
+            <ProtectedRoute>
+              <Expense />
+            </ProtectedRoute>
+          )}
+        />
+        <Route
+          path="/profile"
+          component={() => (
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          )}
+        />
+        <Route path="*" component={NotFound} />
+      </Router>
     </ErrorBoundary>
   );
 };
