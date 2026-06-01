@@ -12,6 +12,14 @@ export default () => {
   const [error, setError] = createSignal("");
   const [expenses, setExpenses] = createSignal([]);
 
+  function handleUsername(event) {
+    setUsername(event.target.value);
+  }
+
+  function handleEmail(event) {
+    setEmail(event.target.value);
+  }
+
   createEffect(async () => {
     if (user) {
       try {
@@ -87,7 +95,7 @@ export default () => {
                   type="text"
                   value={username()}
                   disabled={!isEdit()}
-                  onInput={(e) => setUsername(e.target.value)}
+                  onChange={handleUsername}
                   class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#1baa6a] disabled:bg-gray-100 disabled:text-gray-500"
                 />
               </div>
@@ -98,7 +106,7 @@ export default () => {
                   type="email"
                   value={email()}
                   disabled={!isEdit()}
-                  onInput={(e) => setEmail(e.target.value)}
+                  onChange={handleEmail}
                   class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#1baa6a] disabled:bg-gray-100 disabled:text-gray-500"
                 />
               </div>

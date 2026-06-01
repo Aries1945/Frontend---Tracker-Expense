@@ -13,10 +13,27 @@ const KATEGORI_LIST = [
 const ExpenseForm = (props) => {
   const isEdit = () => props.mode === "edit";
 
-  const [nama, setNama] = createSignal(props.data?.nama || "");
-  const [harga, setHarga] = createSignal(props.data?.harga || "");
-  const [tanggal, setTanggal] = createSignal(props.data?.tanggal || "");
-  const [kategori, setKategori] = createSignal(props.data?.kategori || KATEGORI_LIST[0]);
+
+  const [nama, setNama] = createSignal("");
+  const [harga, setHarga] = createSignal("");
+  const [tanggal, setTanggal] = createSignal("");
+  const [kategori, setKategori] = createSignal( KATEGORI_LIST[0]);
+
+  function handleNama(event) {
+    setNama(event.target.value);
+  }
+
+  function handleHarga(event) {
+    setHarga(event.target.value);
+  }
+
+  function handleTanggal(event) {
+    setTanggal(event.target.value);
+  }
+
+  function handleKategori(event) {
+    setKategori(event.target.value);
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -45,7 +62,7 @@ const ExpenseForm = (props) => {
             type="text"
             required
             value={nama()}
-            onInput={(e) => setNama(e.target.value)}
+            onChange={handleNama}
             class="w-full px-4 py-3 bg-gray-200 border border-transparent rounded-full focus:outline-none focus:bg-gray-100 focus:border-blue-500 transition-colors"
           />
         </div>
@@ -60,7 +77,7 @@ const ExpenseForm = (props) => {
               required
               min="1"
               value={harga()}
-              onInput={(e) => setHarga(e.target.value)}
+              onChange={handleHarga}
               class="w-full px-4 py-3 bg-gray-200 border border-transparent rounded-full focus:outline-none focus:bg-gray-100 focus:border-blue-500 transition-colors"
             />
           </div>
@@ -72,7 +89,7 @@ const ExpenseForm = (props) => {
               type="date"
               required
               value={tanggal()}
-              onInput={(e) => setTanggal(e.target.value)}
+              onChange={handleTanggal}
               class="w-full px-4 py-3 bg-gray-200 border border-transparent rounded-full focus:outline-none focus:bg-gray-100 focus:border-blue-500 transition-colors"
             />
           </div>
@@ -84,7 +101,7 @@ const ExpenseForm = (props) => {
           </label>
           <select
             value={kategori()}
-            onChange={(e) => setKategori(e.target.value)}
+            onChange={handleKategori}
             class="w-full px-4 py-3 bg-gray-200 border border-transparent rounded-full focus:outline-none focus:bg-gray-100 focus:border-blue-500 transition-colors"
           >
             {KATEGORI_LIST.map((k) => (

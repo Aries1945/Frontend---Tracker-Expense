@@ -8,6 +8,14 @@ export default function Login() {
   const [error, setError] = createSignal("");
   const navigate = useNavigate();
 
+  function handleUsername(event) {
+    setUsername(event.target.value);
+  }
+
+  function handlePassword(event) {
+    setPassword(event.target.value);
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
@@ -47,7 +55,7 @@ export default function Login() {
                 class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 transition-all"
                 placeholder="Masukkan username"
                 value={username()}
-                onInput={(e) => setUsername(e.target.value)}
+                onChange={handleUsername}
                 required
               />
             </div>
@@ -59,7 +67,7 @@ export default function Login() {
                 class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 transition-all"
                 placeholder="Masukkan password"
                 value={password()}
-                onInput={(e) => setPassword(e.target.value)}
+                onChange={handlePassword}
                 required
               />
             </div>

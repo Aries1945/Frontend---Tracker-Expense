@@ -1,0 +1,26 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "server ",
+  "keywords": [
+    "bagas"
+  ],
+  "homepage": "https://github.com/Aries1945/Frontend---Tracker-Expense#readme",
+  "bugs": {
+    "url": "https://github.com/Aries1945/Frontend---Tracker-Expense/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aries1945/Frontend---Tracker-Expense.git"
+  },
+  "license": "ISC",
+  "author": "bagas",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+
+    "start": "node server.js",
+    "dev": "node server.js"
+  }
+}
+
