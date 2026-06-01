@@ -43,7 +43,7 @@ const Main = () => (
             type="button"
             class="bg-[#1baa6a] hover:bg-[#159758] text-white text-sm font-semibold text-lg py-3 w-full py-2.5 rounded-xl transition-colors"
           >
-            Masuk
+            Daftar
           </button>
         </A>
       </form>
