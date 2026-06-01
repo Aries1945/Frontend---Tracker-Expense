@@ -1,32 +1,43 @@
-const USERS_KEY = "spendly_users";
+const API_BASE = "http://localhost:5000/api";
 const SESSION_KEY = "spendly_session";
 
-function getUsers() {
-  return JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+export async function register(username, email, password) {
+  try {
+    const res = await fetch(`${API_BASE}/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, email, password }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      return { error: data.error || "Gagal melakukan registrasi." };
+    }
+    return { success: true };
+  } catch (err) {
+    return { error: "Koneksi ke server gagal. Pastikan server backend menyala." };
+  }
 }
 
-export function register(username, email, password) {
-  const users = getUsers();
-  if (users.find((u) => u.username === username)) {
-    return { error: "Username sudah digunakan." };
+export async function login(username, password) {
+  try {
+    const res = await fetch(`${API_BASE}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      return { error: data.error || "Gagal masuk." };
+    }
+    localStorage.setItem(SESSION_KEY, JSON.stringify(data.user));
+    return { success: true };
+  } catch (err) {
+    return { error: "Koneksi ke server gagal. Pastikan server backend menyala." };
   }
-  if (users.find((u) => u.email === email)) {
-    return { error: "Email sudah digunakan." };
-  }
-  const newUser = { username, email, password };
-  users.push(newUser);
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-  return { success: true };
-}
-
-export function login(username, password) {
-  const users = getUsers();
-  const user = users.find((u) => u.username === username && u.password === password);
-  if (!user) {
-    return { error: "Username atau password salah." };
-  }
-  localStorage.setItem(SESSION_KEY, JSON.stringify({ username: user.username, email: user.email }));
-  return { success: true };
 }
 
 export function logout() {
@@ -37,30 +48,23 @@ export function getCurrentUser() {
   return JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
 }
 
-export function updateUser(oldUsername, newUsername, newEmail) {
-  const users = getUsers();
-  const idx = users.findIndex((u) => u.username === oldUsername);
-  if (idx === -1) return { error: "User tidak ditemukan." };
-
-  if (newUsername !== oldUsername && users.find((u) => u.username === newUsername)) {
-    return { error: "Username sudah digunakan." };
-  }
-
-  users[idx] = { ...users[idx], username: newUsername, email: newEmail };
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-
-  // Migrasi data expense jika username berubah
-  if (newUsername !== oldUsername) {
-    const oldKey = `spendly_expenses_${oldUsername}`;
-    const newKey = `spendly_expenses_${newUsername}`;
-    const data = localStorage.getItem(oldKey);
-    if (data) {
-      localStorage.setItem(newKey, data);
-      localStorage.removeItem(oldKey);
+export async function updateUser(oldUsername, newUsername, newEmail) {
+  try {
+    const res = await fetch(`${API_BASE}/update-profile`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ oldUsername, newUsername, newEmail }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      return { error: data.error || "Gagal memperbarui profil." };
     }
+    localStorage.setItem(SESSION_KEY, JSON.stringify(data.user));
+    return { success: true, user: data.user };
+  } catch (err) {
+    return { error: "Koneksi ke server gagal. Pastikan server backend menyala." };
   }
-
-  const updated = { username: newUsername, email: newEmail };
-  localStorage.setItem(SESSION_KEY, JSON.stringify(updated));
-  return { success: true, user: updated };
 }
+

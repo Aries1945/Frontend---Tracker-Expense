@@ -1,0 +1,12 @@
+[
+  {
+    "username": "subagent_test",
+    "email": "subagent_updated@test.com",
+    "password": "password123"
+  },
+  {
+    "username": "admin",
+    "email": "admin@example.com",
+    "password": "admin123"
+  }
+]

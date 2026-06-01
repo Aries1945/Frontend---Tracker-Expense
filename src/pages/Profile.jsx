@@ -1,4 +1,4 @@
-import { createSignal } from "solid-js";
+import { createSignal, createEffect } from "solid-js";
 import DashboardNavbar from "../components/DashboardNavbar";
 import { useAuth } from "../context/AuthContext";
 import { getExpenses } from "../utils/expenseStore";
@@ -10,18 +10,25 @@ export default () => {
   const [username, setUsername] = createSignal(user()?.username || "");
   const [email, setEmail] = createSignal(user()?.email || "");
   const [error, setError] = createSignal("");
+  const [expenses, setExpenses] = createSignal([]);
 
-  const jumlahTransaksi = () =>
-    user() ? getExpenses(user().username).length : 0;
+  createEffect(async () => {
+    const currentUser = user();
+    if (currentUser) {
+      const data = await getExpenses(currentUser.username);
+      setExpenses(data);
+    } else {
+      setExpenses([]);
+    }
+  });
 
-  const totalPengeluaran = () => {
-    if (!user()) return 0;
-    return getExpenses(user().username).reduce((sum, e) => sum + e.harga, 0);
-  };
+  const jumlahTransaksi = () => expenses().length;
 
-  function handleSave() {
+  const totalPengeluaran = () => expenses().reduce((sum, e) => sum + e.harga, 0);
+
+  async function handleSave() {
     setError("");
-    const result = updateUser(username(), email());
+    const result = await updateUser(username(), email());
     if (result.error) {
       setError(result.error);
     } else {

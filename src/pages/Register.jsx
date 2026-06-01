@@ -8,17 +8,25 @@ export default function Register() {
   const [email, setEmail] = createSignal("");
   const [password, setPassword] = createSignal("");
   const [error, setError] = createSignal("");
+  const [loading, setLoading] = createSignal(false);
   const navigate = useNavigate();
   const { register } = useAuth();
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setError("");
-    const result = register(username(), email(), password());
-    if (result.error) {
-      setError(result.error);
-    } else {
-      navigate("/login", { replace: true });
+    setLoading(true);
+    try {
+      const result = await register(username(), email(), password());
+      if (result.error) {
+        setError(result.error);
+        setLoading(false);
+      } else {
+        navigate("/login", { replace: true });
+      }
+    } catch (err) {
+      setError("Terjadi kesalahan sistem. Silakan coba lagi.");
+      setLoading(false);
     }
   }
 
@@ -73,9 +81,10 @@ export default function Register() {
 
             <button
               type="submit"
-              class="bg-[#1baa6a] hover:bg-[#159758] text-white text-lg font-semibold py-3 w-full rounded-xl transition-colors"
+              disabled={loading()}
+              class="bg-[#1baa6a] hover:bg-[#159758] text-white text-lg font-semibold py-3 w-full rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Daftar
+              {loading() ? "Memproses..." : "Daftar"}
             </button>
           </form>
 

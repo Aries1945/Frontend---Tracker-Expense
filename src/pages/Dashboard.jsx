@@ -1,4 +1,4 @@
-import { createMemo, For, Show } from "solid-js";
+import { createMemo, For, Show, createSignal, createEffect } from "solid-js";
 import DashboardNavbar from "../components/DashboardNavbar";
 import { A } from "@solidjs/router";
 import { useAuth } from "../context/AuthContext";
@@ -17,9 +17,17 @@ const formatTanggal = (dateStr) =>
 export default () => {
   const { user } = useAuth();
 
-  const expenses = createMemo(() =>
-    user() ? getExpenses(user().username) : []
-  );
+  const [expenses, setExpenses] = createSignal([]);
+
+  createEffect(async () => {
+    const currentUser = user();
+    if (currentUser) {
+      const data = await getExpenses(currentUser.username);
+      setExpenses(data);
+    } else {
+      setExpenses([]);
+    }
+  });
 
   const bulanIni = new Date().toISOString().slice(0, 7);
 

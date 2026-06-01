@@ -1,4 +1,4 @@
-import { createSignal, createMemo, For, Show } from "solid-js";
+import { createSignal, createMemo, For, Show, createEffect } from "solid-js";
 import DashboardNavbar from "../components/DashboardNavbar";
 import ExpenseForm from "../components/ExpenseForm";
 import { useAuth } from "../context/AuthContext";
@@ -28,9 +28,18 @@ const formatTanggal = (dateStr) =>
 export default () => {
   const { user } = useAuth();
 
-  const [expenses, setExpenses] = createSignal(
-    user() ? getExpenses(user().username) : []
-  );
+  const [expenses, setExpenses] = createSignal([]);
+
+  createEffect(async () => {
+    const currentUser = user();
+    if (currentUser) {
+      const data = await getExpenses(currentUser.username);
+      setExpenses(data);
+    } else {
+      setExpenses([]);
+    }
+  });
+
   const [showForm, setShowForm] = createSignal(false);
 
   const [search, setSearch] = createSignal("");
@@ -79,14 +88,16 @@ export default () => {
       .map(([nama, jumlah]) => ({ nama, jumlah, persen: Math.round((jumlah / total) * 100) }));
   });
 
-  function handleSave(expenseData) {
-    const item = addExpense(user().username, expenseData);
-    setExpenses([...expenses(), item]);
+  async function handleSave(expenseData) {
+    const item = await addExpense(user().username, expenseData);
+    if (item) {
+      setExpenses([...expenses(), item]);
+    }
     setShowForm(false);
   }
 
-  function handleDelete(id) {
-    const updated = deleteExpense(user().username, id);
+  async function handleDelete(id) {
+    const updated = await deleteExpense(user().username, id);
     setExpenses(updated);
   }
 

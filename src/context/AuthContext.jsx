@@ -12,8 +12,8 @@ const AuthContext = createContext();
 export function AuthProvider(props) {
   const [user, setUser] = createSignal(getCurrentUser());
 
-  function login(username, password) {
-    const result = authLogin(username, password);
+  async function login(username, password) {
+    const result = await authLogin(username, password);
     if (result.success) {
       setUser(getCurrentUser());
     }
@@ -25,12 +25,12 @@ export function AuthProvider(props) {
     setUser(null);
   }
 
-  function register(username, email, password) {
-    return authRegister(username, email, password);
+  async function register(username, email, password) {
+    return await authRegister(username, email, password);
   }
 
-  function updateUser(newUsername, newEmail) {
-    const result = authUpdateUser(user().username, newUsername, newEmail);
+  async function updateUser(newUsername, newEmail) {
+    const result = await authUpdateUser(user().username, newUsername, newEmail);
     if (result.success) {
       setUser(result.user);
     }
