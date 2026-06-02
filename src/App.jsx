@@ -1,26 +1,46 @@
-import { A, Router, Route } from "@solidjs/router";
+import { Router, Route } from "@solidjs/router";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import LandingPage from './pages/LandingPage';
-import Expense from './pages/Expense';
-import NotFound from './pages/NotFound';
-import Profile from './pages/Profile';
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import LandingPage from "./pages/LandingPage";
+import Expense from "./pages/Expense";
+import NotFound from "./pages/NotFound";
+import Profile from "./pages/Profile";
 
 const App = () => {
   return (
-    <>
-      <Router>
-        <Route path="/" component={LandingPage}/>
-        <Route path="/login" component={Login}/>
-        <Route path="/register" component={Register}/>
-        <Route path="/dashboard" component={Dashboard}/>
-        <Route path="/expense" component={Expense}/>
-        <Route path="/profile" component={Profile}/>
-        <Route path="*" component={NotFound}/>
-      </Router>
-    </>
+    <Router>
+      <Route path="/" component={LandingPage} />
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
+      <Route
+        path="/dashboard"
+        component={() => (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        )}
+      />
+      <Route
+        path="/expense"
+        component={() => (
+          <ProtectedRoute>
+            <Expense />
+          </ProtectedRoute>
+        )}
+      />
+      <Route
+        path="/profile"
+        component={() => (
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        )}
+      />
+      <Route path="*" component={NotFound} />
+    </Router>
   );
 };
 
