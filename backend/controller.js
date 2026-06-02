@@ -68,13 +68,7 @@ export const getExpensesController = async (req, res) => {
       [username.toLowerCase()]
     );
 
-    //UBah harga jdi numeric
-    const temp = result.rows.map(row => ({
-      ...row,
-      harga: Number(row.harga) 
-    }));
-
-    res.json(temp);
+    res.json(result);
   } catch (err) {
     console.error("Get Expenses Error:", err);
     res.status(500).json({ error: "Terjadi kesalahan pada server." });
@@ -121,7 +115,9 @@ export const deleteExpenseController = async (req, res) => {
       "SELECT * FROM expenses WHERE username = $1 ORDER BY id ASC",
       [username.toLowerCase()]
     );
+    
     res.json(result.rows);
+
   } catch (err) {
     console.error("Delete Expense Error:", err);
     res.status(500).json({ error: "Terjadi kesalahan pada server." });

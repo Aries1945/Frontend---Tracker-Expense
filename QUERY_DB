@@ -1,3 +1,7 @@
+DROP TABLE IF EXISTS expenses;
+
+DROP TABLE IF EXISTS users;
+
 CREATE TABLE users (
     username VARCHAR(50) PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -9,6 +13,6 @@ CREATE TABLE expenses (
     username VARCHAR(50) REFERENCES users(username) ON UPDATE CASCADE ON DELETE CASCADE,
     nama VARCHAR(255) NOT NULL,
     kategori VARCHAR(50) NOT NULL,
-    harga NUMERIC NOT NULL,
+    harga INTEGER NOT NULL,   -- ← diubah dari NUMERIC menjadi INTEGER
     tanggal VARCHAR(50) NOT NULL
 );
