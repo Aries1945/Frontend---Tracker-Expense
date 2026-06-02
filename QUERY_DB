@@ -1,0 +1,14 @@
+CREATE TABLE users (
+    username VARCHAR(50) PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password TEXT NOT NULL
+);
+
+CREATE TABLE expenses (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) REFERENCES users(username) ON UPDATE CASCADE ON DELETE CASCADE,
+    nama VARCHAR(255) NOT NULL,
+    kategori VARCHAR(50) NOT NULL,
+    harga NUMERIC NOT NULL,
+    tanggal VARCHAR(50) NOT NULL
+);

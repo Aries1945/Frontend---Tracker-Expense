@@ -54,14 +54,14 @@ export default () => {
   const [dateTo, setDateTo] = createSignal("");
 
   const filteredExpenses = createMemo(() =>
-    expenses().filter((exp) => {
-      const matchSearch = exp.nama.toLowerCase().includes(search().toLowerCase());
-      const matchKategori = filterKategori() === "Semua" || exp.kategori === filterKategori();
-      let matchDate = true;
-      if (dateFrom()) matchDate = matchDate && exp.tanggal >= dateFrom();
-      if (dateTo()) matchDate = matchDate && exp.tanggal <= dateTo();
-      return matchSearch && matchKategori && matchDate;
-    })
+      expenses().filter((exp) => {
+        const matchSearch = exp.nama.toLowerCase().includes(search().toLowerCase());
+        const matchKategori = filterKategori() === "Semua" || exp.kategori === filterKategori();
+        let matchDate = true;
+        if (dateFrom()) matchDate = matchDate && exp.tanggal >= dateFrom();
+        if (dateTo()) matchDate = matchDate && exp.tanggal <= dateTo();
+        return matchSearch && matchKategori && matchDate;
+      })
   );
 
   const totalPengeluaran = createMemo(() =>
