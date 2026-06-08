@@ -73,16 +73,6 @@ export default () => {
     return count === 0 ? 0 : Math.round(totalPengeluaran() / count);
   });
 
-  const kategoriTerbanyak = createMemo(() => {
-    const summary = {};
-    filteredExpenses().forEach((exp) => {
-      summary[exp.kategori] = (summary[exp.kategori] || 0) + exp.harga;
-    });
-    const entries = Object.entries(summary);
-    if (entries.length === 0) return "-";
-    return entries.reduce((a, b) => (b[1] > a[1] ? b : a))[0];
-  });
-
   const kategoriSummary = createMemo(() => {
     const summary = {};
     filteredExpenses().forEach((exp) => {
@@ -92,6 +82,11 @@ export default () => {
     return Object.entries(summary)
       .sort((a, b) => b[1] - a[1])
       .map(([nama, jumlah]) => ({ nama, jumlah, persen: Math.round((jumlah / total) * 100) }));
+  });
+
+  const kategoriTerbanyak = createMemo(() => {
+    const highest = kategoriSummary().length === 0 ? "-" : kategoriSummary()[0].nama;
+    return highest;
   });
 
   async function handleSave(expenseData) {
