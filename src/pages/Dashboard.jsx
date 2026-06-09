@@ -38,13 +38,7 @@ export default () => {
   //ngambil tanggal, diubah jadi format ISO dipotong jadi cuma 7 karakter awalnya aja, bakal jadi "2026-06"
   const bulanIni = new Date().toISOString().slice(0, 7);
 
-<<<<<<< HEAD
-  //reduce buat ngubah sebuah array yg berisi banyak data jadi 1 nilai tunggal aja
-  //di kasus ini kita mau nyari total dari sebuah array yg isinya data data pengeluaran apa aja, kenapa akhirnya ,0? artinya dimulai dari angka 0
-  const totalSemua = createMemo(() =>
-=======
   const totalPengeluaran = createMemo(() =>
->>>>>>> 65176b630e1a601fa4deab70e53171b6101c07ab
     expenses().reduce((sum, e) => sum + e.harga, 0)
   );
 
@@ -81,13 +75,8 @@ export default () => {
     expenses().forEach((e) => {
       summary[e.kategori] = (summary[e.kategori] || 0) + e.harga;
     });
-<<<<<<< HEAD
-    const total = totalSemua() || 1; //kalo blm ada pengeluaran samsek, bakal bernilai 0, dan nanti bakal error ke proses pembagian angka
-    return Object.entries(summary) //objek summary jadi array berpasangan, cth :  ["Makanan",200000]
-=======
     const total = totalPengeluaran() || 1;
     return Object.entries(summary)
->>>>>>> 65176b630e1a601fa4deab70e53171b6101c07ab
       .sort((a, b) => b[1] - a[1])
       .slice(0, 4)
       .map(([nama, jumlah]) => ({
