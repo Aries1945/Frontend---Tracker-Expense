@@ -1,0 +1,101 @@
+DROP TABLE IF EXISTS expenses;
+
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+    username VARCHAR(50) PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password TEXT NOT NULL
+);
+
+CREATE TABLE expenses (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) REFERENCES users(username) ON UPDATE CASCADE ON DELETE CASCADE,
+    nama VARCHAR(255) NOT NULL,
+    kategori VARCHAR(50) NOT NULL,
+    harga INTEGER NOT NULL,   -- ← diubah dari NUMERIC menjadi INTEGER
+    tanggal VARCHAR(50) NOT NULL
+);
+
+-- Ga bisa dipake karna passnya di hash, jadi kalau mau buat dl trus jalanin yang dibawah
+INSERT INTO users (username, email, password)
+VALUES
+('jonathan', 'jonathan@gmail.com', '123456'),
+('budi', 'budi@gmail.com', '123456'),
+('siti', 'siti@gmail.com', '123456');
+
+-- dummy data expenses
+INSERT INTO expenses (username, nama, kategori, harga, tanggal)
+VALUES
+('jonathan', 'Makan Siang KFC', 'Makanan', 45000, '2026-06-01'),
+('jonathan', 'Starbucks', 'Makanan', 55000, '2026-06-02'),
+('jonathan', 'Gojek', 'Transportasi', 18000, '2026-06-03'),
+
+('budi', 'Ayam Geprek', 'Makanan', 25000, '2026-06-01'),
+('budi', 'Grab Bike', 'Transportasi', 12000, '2026-06-02'),
+
+('siti', 'Skincare', 'Kesehatan', 175000, '2026-06-01'),
+('siti', 'Kursus Udemy', 'Pendidikan', 300000, '2026-06-02');
+
+-- dummy data user joko 50 pcs
+INSERT INTO expenses (username, nama, kategori, harga, tanggal) VALUES
+('joko','Sarapan Bubur','Makanan',18000,'2026-04-01'),
+('joko','Gojek ke Kantor','Transportasi',22000,'2026-04-02'),
+('joko','Makan Siang','Makanan',35000,'2026-04-03'),
+('joko','Kopi Kenangan','Makanan',28000,'2026-04-04'),
+('joko','Bensin Motor','Transportasi',50000,'2026-04-05'),
+('joko','Netflix Bulanan','Hiburan',65000,'2026-04-06'),
+('joko','Ayam Geprek','Makanan',25000,'2026-04-07'),
+('joko','Belanja Indomaret','Belanja',87000,'2026-04-08'),
+('joko','Paket Data','Tagihan',75000,'2026-04-09'),
+('joko','Nonton Bioskop','Hiburan',70000,'2026-04-10'),
+
+('joko','Makan Padang','Makanan',32000,'2026-04-11'),
+('joko','Grab Bike','Transportasi',18000,'2026-04-12'),
+('joko','Vitamin C','Kesehatan',55000,'2026-04-13'),
+('joko','Buku JavaScript','Pendidikan',120000,'2026-04-14'),
+('joko','Kopi Starbucks','Makanan',55000,'2026-04-15'),
+('joko','Bensin Motor','Transportasi',50000,'2026-04-16'),
+('joko','Makan Malam','Makanan',42000,'2026-04-17'),
+('joko','Belanja Shopee','Belanja',175000,'2026-04-18'),
+('joko','Spotify Premium','Hiburan',55000,'2026-04-19'),
+('joko','Token Listrik','Tagihan',150000,'2026-04-20'),
+
+('joko','Bakso','Makanan',25000,'2026-04-21'),
+('joko','Gojek ke Mall','Transportasi',20000,'2026-04-22'),
+('joko','Skincare','Kesehatan',185000,'2026-04-23'),
+('joko','Kursus Online','Pendidikan',250000,'2026-04-24'),
+('joko','Mie Ayam','Makanan',22000,'2026-04-25'),
+
+('joko','Sarapan Roti','Makanan',15000,'2026-05-01'),
+('joko','Grab Bike','Transportasi',19000,'2026-05-02'),
+('joko','Makan Siang','Makanan',35000,'2026-05-03'),
+('joko','Kopi Susu','Makanan',25000,'2026-05-04'),
+('joko','Bensin Motor','Transportasi',50000,'2026-05-05'),
+('joko','Disney+','Hiburan',65000,'2026-05-06'),
+('joko','Ayam Bakar','Makanan',32000,'2026-05-07'),
+('joko','Belanja Alfamart','Belanja',95000,'2026-05-08'),
+('joko','Internet Rumah','Tagihan',350000,'2026-05-09'),
+('joko','Nonton Bioskop','Hiburan',70000,'2026-05-10'),
+
+('joko','Makan Padang','Makanan',35000,'2026-05-11'),
+('joko','Grab Car','Transportasi',45000,'2026-05-12'),
+('joko','Obat Flu','Kesehatan',65000,'2026-05-13'),
+('joko','Buku Clean Code','Pendidikan',180000,'2026-05-14'),
+('joko','Starbucks','Makanan',58000,'2026-05-15'),
+('joko','Bensin Motor','Transportasi',50000,'2026-05-16'),
+('joko','Makan Seafood','Makanan',85000,'2026-05-17'),
+('joko','Belanja Shopee','Belanja',220000,'2026-05-18'),
+('joko','Spotify Premium','Hiburan',55000,'2026-05-19'),
+('joko','Token Listrik','Tagihan',100000,'2026-05-20'),
+
+('joko','Soto Ayam','Makanan',28000,'2026-05-21'),
+('joko','Gojek ke Kampus','Transportasi',18000,'2026-05-22'),
+('joko','Vitamin D','Kesehatan',85000,'2026-05-23'),
+('joko','Kursus React','Pendidikan',300000,'2026-05-24'),
+('joko','Mie Gacoan','Makanan',30000,'2026-05-25');
+
+-- Tes running
+SELECT COUNT(*) FROM expenses WHERE username = 'joko';
+SELECT * FROM users;
+SELECT * FROM expenses;
