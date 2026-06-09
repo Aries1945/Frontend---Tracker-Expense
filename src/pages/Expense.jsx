@@ -15,6 +15,22 @@ const KATEGORI_LIST = [
   "Lainnya",
 ];
 
+  function handleDateFrom(event) {
+    setDateFrom(event.target.value);
+  }
+
+  function handleDateTo(event) {
+    setDateTo(event.target.value);
+  }
+
+  function handleSearch(event) {
+    setSearch(event.target.value);
+  }
+  
+  function handleFilterCategory(event) {
+    setFilterKategori(event.target.value)
+  }
+
 const formatRupiah = (angka) =>
   "Rp " + angka.toLocaleString("id-ID");
 
@@ -185,7 +201,7 @@ export default () => {
                   type="text"
                   placeholder="Ketik nama pengeluaran..."
                   value={search()}
-                  onInput={(e) => setSearch(e.target.value)}
+                  onChange={handleSearch}
                   class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none"
                 />
               </div>
@@ -193,7 +209,7 @@ export default () => {
                 <label class="block text-sm font-medium text-gray-600 mb-1">Kategori</label>
                 <select
                   value={filterKategori()}
-                  onChange={(e) => setFilterKategori(e.target.value)}
+                  onChange={handleFilterCategory}
                   class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none"
                 >
                   <For each={KATEGORI_LIST}>{(kat) => <option value={kat}>{kat}</option>}</For>
@@ -204,7 +220,7 @@ export default () => {
                 <input
                   type="date"
                   value={dateFrom()}
-                  onInput={(e) => setDateFrom(e.target.value)}
+                  onChange={handleDateFrom}
                   class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none"
                 />
               </div>
@@ -213,7 +229,7 @@ export default () => {
                 <input
                   type="date"
                   value={dateTo()}
-                  onInput={(e) => setDateTo(e.target.value)}
+                  onChange={handleDateTo}
                   class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none"
                 />
               </div>
