@@ -1,6 +1,7 @@
 import { createSignal, createMemo, For, Show, createEffect } from "solid-js";
 import DashboardNavbar from "../components/DashboardNavbar";
 import ExpenseForm from "../components/ExpenseForm";
+import Pagination from "../components/Pagination";
 
 const API_BASE = "http://localhost:3001/api";
 
@@ -14,22 +15,6 @@ const KATEGORI_LIST = [
   "Kesehatan",
   "Lainnya",
 ];
-
-  function handleDateFrom(event) {
-    setDateFrom(event.target.value);
-  }
-
-  function handleDateTo(event) {
-    setDateTo(event.target.value);
-  }
-
-  function handleSearch(event) {
-    setSearch(event.target.value);
-  }
-  
-  function handleFilterCategory(event) {
-    setFilterKategori(event.target.value)
-  }
 
 const formatRupiah = (angka) =>
   "Rp " + angka.toLocaleString("id-ID");
@@ -69,15 +54,45 @@ export default () => {
   const [dateFrom, setDateFrom] = createSignal("");
   const [dateTo, setDateTo] = createSignal("");
 
+  // Buat nyimpen halaman yang sedang aktif, set awalnya selalu di halaman pertama
+  const [currentPage, setCurrentPage] = createSignal(1);
+  
+  // Jumlah data yang mau ditampilin per halaman
+  const itemsPerPage = 5;
+
   const filteredExpenses = createMemo(() =>
-      expenses().filter((exp) => {
-        const matchSearch = exp.nama.toLowerCase().includes(search().toLowerCase());
-        const matchKategori = filterKategori() === "Semua" || exp.kategori === filterKategori();
-        let matchDate = true;
-        if (dateFrom()) matchDate = matchDate && exp.tanggal >= dateFrom();
-        if (dateTo()) matchDate = matchDate && exp.tanggal <= dateTo();
-        return matchSearch && matchKategori && matchDate;
-      })
+    expenses().filter((exp) => {
+      const matchSearch = exp.nama.toLowerCase().includes(search().toLowerCase());
+      const matchKategori = filterKategori() === "Semua" || exp.kategori === filterKategori();
+      let matchDate = true;
+      if (dateFrom()) matchDate = matchDate && exp.tanggal >= dateFrom();
+      if (dateTo()) matchDate = matchDate && exp.tanggal <= dateTo();
+      return matchSearch && matchKategori && matchDate;
+    })
+  );
+
+  createEffect(() => {
+    search();
+    filterKategori();
+    dateFrom();
+    dateTo();
+
+    setCurrentPage(1);
+  })
+
+  const paginatedExpenses = createMemo(() => {
+    // Nentuin index awal data
+    const start = (currentPage() - 1) * itemsPerPage;
+    // Nentuin index akhir data
+    const end = start + itemsPerPage;
+
+    // Ambil sebagian data hasil filter
+    return filteredExpenses().slice(start, end);
+  });
+
+  // Buat ngitung total pagination nya ada berapa page
+  const totalPages = createMemo(() =>
+    Math.ceil(filteredExpenses().length / itemsPerPage)
   );
 
   const totalPengeluaran = createMemo(() =>
@@ -89,6 +104,16 @@ export default () => {
     return count === 0 ? 0 : Math.round(totalPengeluaran() / count);
   });
 
+  const kategoriTerbanyak = createMemo(() => {
+    const summary = {};
+    filteredExpenses().forEach((exp) => {
+      summary[exp.kategori] = (summary[exp.kategori] || 0) + exp.harga;
+    });
+    const entries = Object.entries(summary);
+    if (entries.length === 0) return "-";
+    return entries.reduce((a, b) => (b[1] > a[1] ? b : a))[0];
+  });
+
   const kategoriSummary = createMemo(() => {
     const summary = {};
     filteredExpenses().forEach((exp) => {
@@ -98,11 +123,6 @@ export default () => {
     return Object.entries(summary)
       .sort((a, b) => b[1] - a[1])
       .map(([nama, jumlah]) => ({ nama, jumlah, persen: Math.round((jumlah / total) * 100) }));
-  });
-
-  const kategoriTerbanyak = createMemo(() => {
-    const highest = kategoriSummary().length === 0 ? "-" : kategoriSummary()[0].nama;
-    return highest;
   });
 
   async function handleSave(expenseData) {
@@ -201,7 +221,7 @@ export default () => {
                   type="text"
                   placeholder="Ketik nama pengeluaran..."
                   value={search()}
-                  onChange={handleSearch}
+                  onInput={(e) => setSearch(e.target.value)}
                   class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none"
                 />
               </div>
@@ -209,7 +229,7 @@ export default () => {
                 <label class="block text-sm font-medium text-gray-600 mb-1">Kategori</label>
                 <select
                   value={filterKategori()}
-                  onChange={handleFilterCategory}
+                  onChange={(e) => setFilterKategori(e.target.value)}
                   class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none"
                 >
                   <For each={KATEGORI_LIST}>{(kat) => <option value={kat}>{kat}</option>}</For>
@@ -220,7 +240,7 @@ export default () => {
                 <input
                   type="date"
                   value={dateFrom()}
-                  onChange={handleDateFrom}
+                  onInput={(e) => setDateFrom(e.target.value)}
                   class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none"
                 />
               </div>
@@ -229,7 +249,7 @@ export default () => {
                 <input
                   type="date"
                   value={dateTo()}
-                  onChange={handleDateTo}
+                  onInput={(e) => setDateTo(e.target.value)}
                   class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none"
                 />
               </div>
@@ -255,7 +275,7 @@ export default () => {
                 }
               >
                 <div class="space-y-3">
-                  <For each={filteredExpenses()}>
+                  <For each={paginatedExpenses()}>
                     {(exp) => (
                       <div class="flex items-center justify-between border-b pb-3">
                         <div>
@@ -280,6 +300,13 @@ export default () => {
               </Show>
 
               <div class="mt-6 pt-4 border-t-2 border-gray-200 flex items-center justify-between">
+                <Show when={totalPages() > 1}>
+                  <Pagination
+                    currentPage={currentPage()}
+                    totalPages={totalPages()}
+                    onPageChange={setCurrentPage}
+                  />
+                </Show>
                 <p class="text-lg font-bold text-[#1a1a2e]">Total</p>
                 <p class="text-xl font-bold text-[#1baa6a]">{formatRupiah(totalPengeluaran())}</p>
               </div>
