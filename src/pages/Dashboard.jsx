@@ -2,7 +2,7 @@ import { createMemo, For, Show, createSignal, createEffect } from "solid-js";
 import DashboardNavbar from "../components/DashboardNavbar";
 import { A } from "@solidjs/router";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "http://localhost:3001/api";
 
 const formatRupiah = (angka) =>
   "Rp " + angka.toLocaleString("id-ID");
@@ -38,9 +38,13 @@ export default () => {
   //ngambil tanggal, diubah jadi format ISO dipotong jadi cuma 7 karakter awalnya aja, bakal jadi "2026-06"
   const bulanIni = new Date().toISOString().slice(0, 7);
 
+<<<<<<< HEAD
   //reduce buat ngubah sebuah array yg berisi banyak data jadi 1 nilai tunggal aja
   //di kasus ini kita mau nyari total dari sebuah array yg isinya data data pengeluaran apa aja, kenapa akhirnya ,0? artinya dimulai dari angka 0
   const totalSemua = createMemo(() =>
+=======
+  const totalPengeluaran = createMemo(() =>
+>>>>>>> 65176b630e1a601fa4deab70e53171b6101c07ab
     expenses().reduce((sum, e) => sum + e.harga, 0)
   );
 
@@ -77,8 +81,13 @@ export default () => {
     expenses().forEach((e) => {
       summary[e.kategori] = (summary[e.kategori] || 0) + e.harga;
     });
+<<<<<<< HEAD
     const total = totalSemua() || 1; //kalo blm ada pengeluaran samsek, bakal bernilai 0, dan nanti bakal error ke proses pembagian angka
     return Object.entries(summary) //objek summary jadi array berpasangan, cth :  ["Makanan",200000]
+=======
+    const total = totalPengeluaran() || 1;
+    return Object.entries(summary)
+>>>>>>> 65176b630e1a601fa4deab70e53171b6101c07ab
       .sort((a, b) => b[1] - a[1])
       .slice(0, 4)
       .map(([nama, jumlah]) => ({
@@ -113,7 +122,7 @@ export default () => {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div class="bg-white rounded-2xl p-6 shadow-md">
             <p class="text-gray-500 text-sm">Total Pengeluaran</p>
-            <h2 class="text-2xl font-bold text-[#1a1a2e] mt-2">{formatRupiah(totalSemua())}</h2>
+            <h2 class="text-2xl font-bold text-[#1a1a2e] mt-2">{formatRupiah(totalPengeluaran())}</h2>
           </div>
           <div class="bg-white rounded-2xl p-6 shadow-md">
             <p class="text-gray-500 text-sm">Bulan Ini</p>
