@@ -1,8 +1,9 @@
 import { createSignal, createMemo, For, Show, createEffect } from "solid-js";
 import DashboardNavbar from "../components/DashboardNavbar";
 import ExpenseForm from "../components/ExpenseForm";
+import Pagination from "../components/Pagination";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "http://localhost:3001/api";
 
 const KATEGORI_LIST = [
   "Semua",
@@ -53,15 +54,45 @@ export default () => {
   const [dateFrom, setDateFrom] = createSignal("");
   const [dateTo, setDateTo] = createSignal("");
 
+  // Buat nyimpen halaman yang sedang aktif, set awalnya selalu di halaman pertama
+  const [currentPage, setCurrentPage] = createSignal(1);
+  
+  // Jumlah data yang mau ditampilin per halaman
+  const itemsPerPage = 5;
+
   const filteredExpenses = createMemo(() =>
-      expenses().filter((exp) => {
-        const matchSearch = exp.nama.toLowerCase().includes(search().toLowerCase());
-        const matchKategori = filterKategori() === "Semua" || exp.kategori === filterKategori();
-        let matchDate = true;
-        if (dateFrom()) matchDate = matchDate && exp.tanggal >= dateFrom();
-        if (dateTo()) matchDate = matchDate && exp.tanggal <= dateTo();
-        return matchSearch && matchKategori && matchDate;
-      })
+    expenses().filter((exp) => {
+      const matchSearch = exp.nama.toLowerCase().includes(search().toLowerCase());
+      const matchKategori = filterKategori() === "Semua" || exp.kategori === filterKategori();
+      let matchDate = true;
+      if (dateFrom()) matchDate = matchDate && exp.tanggal >= dateFrom();
+      if (dateTo()) matchDate = matchDate && exp.tanggal <= dateTo();
+      return matchSearch && matchKategori && matchDate;
+    })
+  );
+
+  createEffect(() => {
+    search();
+    filterKategori();
+    dateFrom();
+    dateTo();
+
+    setCurrentPage(1);
+  })
+
+  const paginatedExpenses = createMemo(() => {
+    // Nentuin index awal data
+    const start = (currentPage() - 1) * itemsPerPage;
+    // Nentuin index akhir data
+    const end = start + itemsPerPage;
+
+    // Ambil sebagian data hasil filter
+    return filteredExpenses().slice(start, end);
+  });
+
+  // Buat ngitung total pagination nya ada berapa page
+  const totalPages = createMemo(() =>
+    Math.ceil(filteredExpenses().length / itemsPerPage)
   );
 
   const totalPengeluaran = createMemo(() =>
@@ -244,7 +275,7 @@ export default () => {
                 }
               >
                 <div class="space-y-3">
-                  <For each={filteredExpenses()}>
+                  <For each={paginatedExpenses()}>
                     {(exp) => (
                       <div class="flex items-center justify-between border-b pb-3">
                         <div>
@@ -269,6 +300,13 @@ export default () => {
               </Show>
 
               <div class="mt-6 pt-4 border-t-2 border-gray-200 flex items-center justify-between">
+                <Show when={totalPages() > 1}>
+                  <Pagination
+                    currentPage={currentPage()}
+                    totalPages={totalPages()}
+                    onPageChange={setCurrentPage}
+                  />
+                </Show>
                 <p class="text-lg font-bold text-[#1a1a2e]">Total</p>
                 <p class="text-xl font-bold text-[#1baa6a]">{formatRupiah(totalPengeluaran())}</p>
               </div>

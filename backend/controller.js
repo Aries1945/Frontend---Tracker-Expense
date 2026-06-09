@@ -68,7 +68,7 @@ export const getExpensesController = async (req, res) => {
       [username.toLowerCase()]
     );
 
-    res.json(result);
+    res.json(result.rows);
   } catch (err) {
     console.error("Get Expenses Error:", err);
     res.status(500).json({ error: "Terjadi kesalahan pada server." });

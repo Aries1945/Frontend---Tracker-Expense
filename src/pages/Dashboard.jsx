@@ -2,7 +2,7 @@ import { createMemo, For, Show, createSignal, createEffect } from "solid-js";
 import DashboardNavbar from "../components/DashboardNavbar";
 import { A } from "@solidjs/router";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "http://localhost:3001/api";
 
 const formatRupiah = (angka) =>
   "Rp " + angka.toLocaleString("id-ID");
@@ -37,7 +37,7 @@ export default () => {
 
   const bulanIni = new Date().toISOString().slice(0, 7);
 
-  const totalSemua = createMemo(() =>
+  const totalPengeluaran = createMemo(() =>
     expenses().reduce((sum, e) => sum + e.harga, 0)
   );
 
@@ -68,7 +68,7 @@ export default () => {
     expenses().forEach((e) => {
       summary[e.kategori] = (summary[e.kategori] || 0) + e.harga;
     });
-    const total = totalSemua() || 1;
+    const total = totalPengeluaran() || 1;
     return Object.entries(summary)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 4)
@@ -104,7 +104,7 @@ export default () => {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div class="bg-white rounded-2xl p-6 shadow-md">
             <p class="text-gray-500 text-sm">Total Pengeluaran</p>
-            <h2 class="text-2xl font-bold text-[#1a1a2e] mt-2">{formatRupiah(totalSemua())}</h2>
+            <h2 class="text-2xl font-bold text-[#1a1a2e] mt-2">{formatRupiah(totalPengeluaran())}</h2>
           </div>
           <div class="bg-white rounded-2xl p-6 shadow-md">
             <p class="text-gray-500 text-sm">Bulan Ini</p>
