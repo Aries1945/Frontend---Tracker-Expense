@@ -35,41 +35,50 @@ export default () => {
     }
   });
 
+  //ngambil tanggal, diubah jadi format ISO dipotong jadi cuma 7 karakter awalnya aja, bakal jadi "2026-06"
   const bulanIni = new Date().toISOString().slice(0, 7);
 
+  //reduce buat ngubah sebuah array yg berisi banyak data jadi 1 nilai tunggal aja
+  //di kasus ini kita mau nyari total dari sebuah array yg isinya data data pengeluaran apa aja, kenapa akhirnya ,0? artinya dimulai dari angka 0
   const totalSemua = createMemo(() =>
     expenses().reduce((sum, e) => sum + e.harga, 0)
   );
 
+  //di sini mau nyari total pengeluaran dari bulan ini aja, manggil si const bulanIni yg td udh dbikin di atas
   const totalBulanIni = createMemo(() =>
     expenses()
-      .filter((e) => e.tanggal.startsWith(bulanIni))
+      .filter((e) => e.tanggal.startsWith(bulanIni)) //filter jadi cmn yg awalnya sesuai dengan bulanIni yg akan diproses
       .reduce((sum, e) => sum + e.harga, 0)
   );
 
+  //nyari kategori mana yg ngabisin uang paling banyak
   const kategoriTerbesar = createMemo(() => {
+    //kelompokin dulu berdasarkan si kategori
     const summary = {};
     expenses().forEach((e) => {
       summary[e.kategori] = (summary[e.kategori] || 0) + e.harga;
     });
+    //ngubah objek 'summary' jadi sebuah array make object.entries
     const entries = Object.entries(summary);
-    if (entries.length === 0) return "-";
+    if (entries.length === 0) return "-"; //kalo gada pengeluaran samsek return -
     return entries.reduce((a, b) => (b[1] > a[1] ? b : a))[0];
   });
 
+
   const transaksiTerbaru = createMemo(() =>
-    [...expenses()]
+    [...expenses()] //nyalin array dulu, krn fungsi .sort ini sifatnya mutable(mengubah data asli), kalo g diduplikat nnt urutan data aslinya ikutan berantakan
       .sort((a, b) => b.tanggal.localeCompare(a.tanggal))
       .slice(0, 5)
   );
 
   const kategoriSummary = createMemo(() => {
     const summary = {};
+    //kelompokin per kategori
     expenses().forEach((e) => {
       summary[e.kategori] = (summary[e.kategori] || 0) + e.harga;
     });
-    const total = totalSemua() || 1;
-    return Object.entries(summary)
+    const total = totalSemua() || 1; //kalo blm ada pengeluaran samsek, bakal bernilai 0, dan nanti bakal error ke proses pembagian angka
+    return Object.entries(summary) //objek summary jadi array berpasangan, cth :  ["Makanan",200000]
       .sort((a, b) => b[1] - a[1])
       .slice(0, 4)
       .map(([nama, jumlah]) => ({
