@@ -1,7 +1,7 @@
 import { createSignal, createEffect } from "solid-js";
 import DashboardNavbar from "../components/DashboardNavbar";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "http://localhost:3001/api";
 
 export default () => {
   const user = JSON.parse(localStorage.getItem("spendly_session") || "null");

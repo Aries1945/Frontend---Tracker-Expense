@@ -2,7 +2,7 @@ import { createMemo, For, Show, createSignal, createEffect } from "solid-js";
 import DashboardNavbar from "../components/DashboardNavbar";
 import { A } from "@solidjs/router";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "http://localhost:3001/api";
 
 const formatRupiah = (angka) =>
   "Rp " + angka.toLocaleString("id-ID");
