@@ -60,6 +60,7 @@ export default () => {
   // Jumlah data yang mau ditampilin per halaman
   const itemsPerPage = 5;
 
+  // filter semua data expenses berdasarkan search, kategori, dan tanggal.
   const filteredExpenses = createMemo(() =>
     expenses().filter((exp) => {
       const matchSearch = exp.nama.toLowerCase().includes(search().toLowerCase());
@@ -71,15 +72,20 @@ export default () => {
     })
   );
 
+  // reset haaman otomatis saat ada filter yang berubah
   createEffect(() => {
     search();
     filterKategori();
     dateFrom();
     dateTo();
 
-    setCurrentPage(1);
+    //potong atau slice data sesuai halaman aktif 
+    setCurrentPage(1); 
   })
 
+  // perhitungan pagination contoh : 
+  // halaman 1 tampil item ke 0-4
+  // halaman 2 tampil item ke 5-9, dst
   const paginatedExpenses = createMemo(() => {
     // Nentuin index awal data
     const start = (currentPage() - 1) * itemsPerPage;
@@ -298,7 +304,8 @@ export default () => {
                   </For>
                 </div>
               </Show>
-
+ 
+              {/* Passing data page ke brpa, total page brp dan ganti setCurrentPage */}
               <div class="mt-6 pt-4 border-t-2 border-gray-200 flex items-center justify-between">
                 <Show when={totalPages() > 1}>
                   <Pagination
